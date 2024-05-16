@@ -96,16 +96,63 @@ print(trajectories)
 
 #Plot one trajectory
 #---------------------------------
+lattice=[ [x,y] for x in range(N) for y in range(N)]
+print(lattice)
+x_lattice=[step[0] for step in lattice]
+y_lattice=[step[1] for step in lattice]
+
 x_move=[step[0] for step in trajectories[1]]
 y_move=[step[1] for step in trajectories[1]]
 
 
-plt.scatter(x_move,y_move)
+#Define figure size in cm
+cm = 1/2.54 #convert inch to cm
+width = 8*cm; height=4*cm 
+
+#Figure settings                                                     
+#--------------------------------
+output_path='../results/plots/' #A path to save figure
+extensions=['.svg','.png','.pdf']     #Extensions to save figure
+
+#Define figure size                                                  
+cm = 1/2.54 #convert inch to cm                                      
+width = 8*cm; height=4*cm #8x4cm for each figure in panel
+
+#Fonts and sizes                                                     
+size_axis=7;size_ticks=6;size_title=5
+line_w=1;marker_s=3
+#--------------------------------
+
+#Plots                                                               
+#--------------------------------
+for i in range(len(x_move)-1):
+    plt.arrow(x_move[i], y_move[i], (x_move[i+1]-x_move[i])*0.3, (y_move[i+1]-y_move[i])*0.3,width=0.01,color='r')
+    plt
+
+plt.plot(x_move,y_move,color='red',linestyle='dotted')
+
+plt.scatter(x_lattice[:-1], y_lattice[:-1])
+plt.scatter(ori[0], ori[1], color= 'r', marker='D')
+plt.scatter(des[0], des[1], color= 'r', marker='*',s=100)
 
 
-plt.arrow(x_move[0], y_move[0], 0.60*x_move[1], 0.60*y_move[1],width=0.01,color='red')
-    
-plt.plot(x_move,y_move,color='red')
+#Labels                                                              
+plt.xlabel('x',fontsize=size_axis);plt.ylabel('y',fontsize=size_axis)
+
+#Ticks                                                               
+xtick_labels=[0, 1, 2 ]
+plt.xticks(xtick_labels, fontsize=size_ticks)
+
+ytick_labels=[0, 1, 2 ]
+plt.yticks(ytick_labels, fontsize=size_ticks)
+
+#legend                                                              
+#plt.legend(loc='best',fontsize=size_ticks,frameon=False)
+
+name_fig='trajectory'
+#save fig                                                            
+for ext in extensions:
+    plt.savefig(output_path+name_fig+ext,dpi=300)
 
 plt.show()
-#---------------------------------
+#-------------------------------- 
