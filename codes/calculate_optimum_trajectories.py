@@ -3,6 +3,7 @@
 import numpy as np
 import random as rnd
 import copy
+import pandas as pd
 
 import matplotlib.gridspec as gridspec
 import matplotlib
@@ -12,9 +13,10 @@ from matplotlib.pyplot import figure
 
 #Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
 #---------------------------------
+planes=1 #number of planes
 N=3
 ori=np.array([0,0]);des=np.array([2,2])
-d=sum(abs(ori - des))
+d=sum(abs(ori - des)) #distance origin destination
 trajectories = [list(ori)]
 #---------------------------------
 
@@ -33,20 +35,12 @@ while d > 0:
         trajectories.append(list(ori))
     
 print(trajectories)
-quit()
-    
-#Plot one trajectory
+
+#Save trajectories to dataframe and dataframe to csv
 #---------------------------------
-x_move=[step[0] for step in trajectories[1]]
-y_move=[step[1] for step in trajectories[1]]
+x_move=[step[0] for step in trajectories]
+y_move=[step[1] for step in trajectories]
 
-
-plt.scatter(x_move,y_move)
-
-
-plt.arrow(x_move[0], y_move[0], 0.60*x_move[1], 0.60*y_move[1],width=0.01,color='red')
-    
-plt.plot(x_move,y_move,color='red')
-
-plt.show()
+d_tr = pd.DataFrame({'plane_1_x' : x_move, 'plane_1_y': y_move})
+d_tr.to_csv('../data/' + 'trajectories_size_' + str(N) + '_planes_' + str(planes)+  '.csv')
 #---------------------------------

@@ -9,6 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 import matplotlib.animation as animation
+import pandas as pd
 
 
 #Size of lattice, origin and destination
@@ -92,8 +93,24 @@ for iteration in range(max_trajectories):
         
     trajectories.append(trajectory)#Store trajectory in list of lists
 
-    
+
+
 print(trajectories)
+
+#Save trajectories to dataframe and dataframe to csv
+#---------------------------------
+i=0
+d_tr = pd.DataFrame()
+for trajectory in trajectories:
+    x_move=[step[0] for step in trajectory]
+    y_move=[step[1] for step in trajectory]
+    d_tr['plane_' +str(i)+ '_x']=x_move
+    d_tr['plane_' +str(i)+ '_y']=y_move
+    i+=1
+    
+print(d_tr)
+d_tr.to_csv('../data/' + 'probability_trajectories_size_' + str(N) +   '.csv')
+#---------------------------------
 
 #Plot one trajectory
 #---------------------------------
@@ -122,6 +139,7 @@ width = 8*cm; height=4*cm #8x4cm for each figure in panel
 #Fonts and sizes                                                     
 size_axis=7;size_ticks=6;size_title=5
 line_w=1;marker_s=3
+
 #--------------------------------
 
 #Plots                                                               
