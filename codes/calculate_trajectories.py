@@ -159,7 +159,6 @@ plt.show()
 #-------------------------------- 
 
 
-
 fig, ax = plt.subplots()
 t = np.linspace(0, 3, 40)
 g = -9.81
