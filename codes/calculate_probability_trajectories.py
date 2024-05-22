@@ -8,7 +8,6 @@ import matplotlib.gridspec as gridspec
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
-import matplotlib.animation as animation
 import pandas as pd
 
 
@@ -94,116 +93,23 @@ for iteration in range(max_trajectories):
     trajectories.append(trajectory)#Store trajectory in list of lists
 
 
-
 print(trajectories)
 
 #Save trajectories to dataframe and dataframe to csv
 #---------------------------------
-i=0
-d_tr = pd.DataFrame()
-for trajectory in trajectories:
+x_move=[step[0] for step in trajectories[0]]
+y_move=[step[1] for step in trajectories[0]]
+
+d_tr=pd.DataFrame({'plane_0_x' : x_move, 'plane_0_y' : y_move})
+
+i=1
+for trajectory in trajectories[1:]:
     x_move=[step[0] for step in trajectory]
     y_move=[step[1] for step in trajectory]
-    d_tr['plane_' +str(i)+ '_x']=x_move
-    d_tr['plane_' +str(i)+ '_y']=y_move
+    d_tr_i=pd.DataFrame({'plane_'+str(i)+'_x' : x_move, 'plane_'+str(i)+'_y' : y_move})
+
+    d_tr=pd.concat([d_tr, d_tr_i],axis=1)
     i+=1
     
-print(d_tr)
 d_tr.to_csv('../data/' + 'probability_trajectories_size_' + str(N) +   '.csv')
 #---------------------------------
-
-#Plot one trajectory
-#---------------------------------
-lattice=[ [x,y] for x in range(N) for y in range(N)]
-print(lattice)
-x_lattice=[step[0] for step in lattice]
-y_lattice=[step[1] for step in lattice]
-
-x_move=[step[0] for step in trajectories[1]]
-y_move=[step[1] for step in trajectories[1]]
-
-
-#Define figure size in cm
-cm = 1/2.54 #convert inch to cm
-width = 8*cm; height=4*cm 
-
-#Figure settings                                                     
-#--------------------------------
-output_path='../results/plots/' #A path to save figure
-extensions=['.svg','.png','.pdf']     #Extensions to save figure
-
-#Define figure size                                                  
-cm = 1/2.54 #convert inch to cm                                      
-width = 8*cm; height=4*cm #8x4cm for each figure in panel
-
-#Fonts and sizes                                                     
-size_axis=7;size_ticks=6;size_title=5
-line_w=1;marker_s=3
-
-#--------------------------------
-
-#Plots                                                               
-#--------------------------------
-for i in range(len(x_move)-1):
-    plt.arrow(x_move[i], y_move[i], (x_move[i+1]-x_move[i])*0.3, (y_move[i+1]-y_move[i])*0.3,width=0.01,color='r')
-    plt.text(x_move[i] + 0.05, y_move[i]+0.05, 'step ' + str(i), fontsize= size_axis)
-
-plt.plot(x_move,y_move,color='red',linestyle='dotted')
-
-plt.scatter(x_lattice[:-1], y_lattice[:-1])
-plt.scatter(ori[0], ori[1], color= 'r', marker='D')
-plt.scatter(des[0], des[1], color= 'r', marker='*',s=100)
-
-
-#Labels                                                              
-plt.xlabel('x',fontsize=size_axis);plt.ylabel('y',fontsize=size_axis)
-
-#Ticks                                                               
-xtick_labels=[0, 1, 2 ]
-plt.xticks(xtick_labels, fontsize=size_ticks)
-
-ytick_labels=[0, 1, 2 ]
-plt.yticks(ytick_labels, fontsize=size_ticks)
-
-#legend                                                              
-#plt.legend(loc='best',fontsize=size_ticks,frameon=False)
-
-name_fig='trajectory'
-#save fig                                                            
-for ext in extensions:
-    plt.savefig(output_path+name_fig+ext,dpi=300)
-
-plt.show()
-#-------------------------------- 
-
-
-fig, ax = plt.subplots()
-t = np.linspace(0, 3, 40)
-g = -9.81
-v0 = 12
-z = g * t**2 / 2 + v0 * t
-
-v02 = 5
-z2 = g * t**2 / 2 + v02 * t
-
-scat = ax.scatter(t[0], z[0], c="b", s=5, label=f'v0 = {v0} m/s')
-line2 = ax.plot(t[0], z2[0], label=f'v0 = {v02} m/s')[0]
-ax.set(xlim=[0, 3], ylim=[-4, 10], xlabel='Time [s]', ylabel='Z [m]')
-ax.legend()
-
-
-def update(frame):
-    # for each frame, update the data stored on each artist.
-    x = t[:frame]
-    y = z[:frame]
-    # update the scatter plot:
-    data = np.stack([x, y]).T
-    scat.set_offsets(data)
-    # update the line plot:
-    line2.set_xdata(t[:frame])
-    line2.set_ydata(z2[:frame])
-    return (scat, line2)
-
-
-ani = animation.FuncAnimation(fig=fig, func=update, frames=40, interval=30)
-plt.show()
