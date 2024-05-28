@@ -12,15 +12,29 @@ from matplotlib.pyplot import figure
 
 class plane:
 
+    #Atributes
+
     def __init__(self, ori_plane,des_plane):
         self.origin = np.array([ori_plane[0], ori_plane[1]])
         self.destin = np.array([des_plane[0], des_plane[1]])
-
-    #Atributes
-
-    #-current position
+        self.pos = self.origin
+        self.distance=sum(abs(self.pos - self.destin))
+        self.trajectory=[list(self.origin)]
         
+
+
     #Methods
+    #move
+    def update_pos(self, pos):
+        movements = [np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])]
+        
+        proposed_pos  = self.pos + rnd.choice(movements)
+        proposed_dist = sum(abs(proposed_pos - self.destin))
+        
+        if proposed_dist < self.distance:
+            self.pos = proposed_pos
+            self.distance = proposed_dist
+            self.trajectory.append(list(self.pos))
 
     #-move
     #-track trajectory
@@ -29,17 +43,29 @@ class plane:
 
 
 test=plane([0,0], [2,2])
-print(test)
 print(test.origin)
 print(test.destin)
+print(test.pos)
+print(test.distance)
 
+# test.update_pos(test.pos)
+# print(test.pos)
+# print(test.distance)
+# test.update_pos(test.pos)
+# print(test.pos)
+# print(test.distance)
 
+while test.distance > 0:
+    test.update_pos(test.pos)
+    print(test.pos)
+    print(test.distance)
+
+print(test.trajectory)
 #Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
 #---------------------------------
 planes=1 #number of planes
 N=3
-ori=test.origin; des= test.destin
-#ori=np.array([0,0]);des=np.array([2,2])
+ori=np.array([0,0]);des=np.array([2,2])
 
 
 d=sum(abs(ori - des)) #distance origin destination
