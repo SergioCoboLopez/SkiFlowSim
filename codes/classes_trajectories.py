@@ -10,19 +10,19 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 
+
 #Define the class "plane"
 class plane:
 
-    #Define the Attributes of the class (its important characteristics)
+    #Define Attributes of the class (its important characteristics)
 
     def __init__(self, ori_plane,des_plane):
         self.origin = np.array([ori_plane[0], ori_plane[1]]) #origin
         self.destin = np.array([des_plane[0], des_plane[1]]) #destination
-        self.pos = self.origin                               #current position
-        self.distance=sum(abs(self.pos - self.destin))       #current distance to destination
-        self.trajectory=[list(self.origin)]                  #current trajectory: record of the points it has visited
+        self.pos=self.origin                      #current position
+        self.distance=sum(abs(self.pos-self.destin))#current distance to destination
+        self.trajectory=[list(self.origin)]#current trajectory
         
-
 
     #Define Methods: the things a plane does
     #move
@@ -38,12 +38,25 @@ class plane:
             self.trajectory.append(list(self.pos))
 
 
+
+        
+            
 planes=2
 
 plane0=plane([0,0], [2,2]) #Define object with origin and destination
 plane1=plane([2,2], [0,0]) #Define a second object (plane) with opposite destination/origin
 
 print("starting at:", plane0.origin, ". Destination:", plane0.destin, ". Minimum distance:", plane0.distance)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# steps=5
+# for step in range(steps):
+#     plane0.update_pos(plane0.pos)
+#     plane1.update_pos(plane1.pos)
+
+# print(plane0.trajectory)
+# print(plane1.trajectory)
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 #Plane 0
