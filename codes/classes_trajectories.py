@@ -10,20 +10,21 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 
+#Define the class "plane"
 class plane:
 
-    #Atributes
+    #Define the Attributes of the class (its important characteristics)
 
     def __init__(self, ori_plane,des_plane):
-        self.origin = np.array([ori_plane[0], ori_plane[1]])
-        self.destin = np.array([des_plane[0], des_plane[1]])
-        self.pos = self.origin
-        self.distance=sum(abs(self.pos - self.destin))
-        self.trajectory=[list(self.origin)]
+        self.origin = np.array([ori_plane[0], ori_plane[1]]) #origin
+        self.destin = np.array([des_plane[0], des_plane[1]]) #destination
+        self.pos = self.origin                               #current position
+        self.distance=sum(abs(self.pos - self.destin))       #current distance to destination
+        self.trajectory=[list(self.origin)]                  #current trajectory: record of the points it has visited
         
 
 
-    #Methods
+    #Define Methods: the things a plane does
     #move
     def update_pos(self, pos):
         movements = [np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])]
@@ -36,63 +37,41 @@ class plane:
             self.distance = proposed_dist
             self.trajectory.append(list(self.pos))
 
-    #-move
-    #-track trajectory
-    #-calculate current position
-    #-calculate distance to destination
+
+planes=2
+
+plane0=plane([0,0], [2,2]) #Define object with origin and destination
+plane1=plane([2,2], [0,0]) #Define a second object (plane) with opposite destination/origin
+
+print("starting at:", plane0.origin, ". Destination:", plane0.destin, ". Minimum distance:", plane0.distance)
 
 
-test=plane([0,0], [2,2])
-print(test.origin)
-print(test.destin)
-print(test.pos)
-print(test.distance)
+#Plane 0
+while plane0.distance > 0:
+    plane0.update_pos(plane0.pos)
 
-# test.update_pos(test.pos)
-# print(test.pos)
-# print(test.distance)
-# test.update_pos(test.pos)
-# print(test.pos)
-# print(test.distance)
+print(plane0.trajectory)
 
-while test.distance > 0:
-    test.update_pos(test.pos)
-    print(test.pos)
-    print(test.distance)
+#Plane 1
+while plane1.distance > 0:
+    plane1.update_pos(plane1.pos)
 
-print(test.trajectory)
+print(plane1.trajectory)
+
+
 #Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
 #---------------------------------
-planes=1 #number of planes
-N=3
-ori=np.array([0,0]);des=np.array([2,2])
+N=3 #---> In the future a "grid or airspace class will need to be defined"
 
-
-d=sum(abs(ori - des)) #distance origin destination
-trajectories = [list(ori)]
-#---------------------------------
-
-print("starting at:", ori, ". Destination:", des, ". Minimum distance:", d)
-
-                    #left,             up,              right,           down
-translate=[np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])]
-
-
-while d > 0:
-    new_ori = ori + rnd.choice(translate)    #Observe that being out of the lattice is also a candidate, but it will always be a bad candidate
-    new_d = sum(abs(new_ori - des))
-    if new_d < d:
-        ori = new_ori
-        d = new_d
-        trajectories.append(list(ori))
-    
-print(trajectories)
 
 #Save trajectories to dataframe and dataframe to csv
 #---------------------------------
-# x_move=[step[0] for step in trajectories]
-# y_move=[step[1] for step in trajectories]
+x_move0=[step[0] for step in plane0.trajectory]
+y_move0=[step[1] for step in plane0.trajectory]
 
-# d_tr = pd.DataFrame({'plane_1_x' : x_move, 'plane_1_y': y_move})
-# d_tr.to_csv('../data/' + 'trajectories_size_' + str(N) + '_planes_' + str(planes)+  '.csv')
+x_move1=[step[0] for step in plane1.trajectory]
+y_move1=[step[1] for step in plane1.trajectory]
+
+d_tr = pd.DataFrame({'plane0_x' : x_move0, 'plane0_y': y_move0,'plane1_x' : x_move1, 'plane1_y': y_move1 })
+d_tr.to_csv('../data/' + 'trajectories_classes_size_' + str(N) + '_planes_' + str(planes)+  '.csv')
 #---------------------------------
