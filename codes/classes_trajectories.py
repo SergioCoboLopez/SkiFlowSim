@@ -26,37 +26,63 @@ class plane:
 
     #Define Methods: the things a plane does
     #move
-    def update_pos(self, pos):
+    def update_pos_random(self, pos):
         movements = [np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])]
         
         proposed_pos  = self.pos + rnd.choice(movements)
         proposed_dist = sum(abs(proposed_pos - self.destin))
+
+        self.pos = proposed_pos
+        self.distance = proposed_dist
+        self.trajectory.append(list(self.pos))
+
+
+      #move
+    def update_pos_optimally(self, pos):
         
-        if proposed_dist < self.distance:
-            self.pos = proposed_pos
-            self.distance = proposed_dist
-            self.trajectory.append(list(self.pos))
+        movements = [np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])]
+
+        possible_positions=[self.pos + movement for movement in movements]
+        possible_distances=[sum(abs(possible_position - self.destin)) for possible_position in possible_positions]
+        
+        min_distance=possible_distances.index(min(possible_distances))
+        best_position=possible_positions[min_distance]
+
+        if (self.pos[0] == self.destin[0] and self.pos[1] == self.destin[1]):
+            best_position=self.pos
+            
+        self.pos = best_position
+        self.distance=sum(abs(best_position - self.destin))
+        self.trajectory.append(list(self.pos))
 
 
-planes=2
+planes=4
 
 plane0=plane([0,0], [2,2]) #Define object with origin and destination
 plane1=plane([2,2], [0,0]) #Define a second object (plane) with opposite destination/origin
+plane2=plane([0,2], [2,0]) #Define object with origin and destination
+plane3=plane([2,0], [0,2]) #Define a second object (plane) with opposite destination/origin
+
+
 
 print("starting at:", plane0.origin, ". Destination:", plane0.destin, ". Minimum distance:", plane0.distance)
 
+print("starting at:", plane1.origin, ". Destination:", plane1.destin, ". Minimum distance:", plane1.distance)
 
-#Plane 0
-while plane0.distance > 0:
-    plane0.update_pos(plane0.pos)
+print("starting at:", plane2.origin, ". Destination:", plane2.destin, ". Minimum distance:", plane2.distance)
+
+print("starting at:", plane3.origin, ". Destination:", plane3.destin, ". Minimum distance:", plane3.distance)
+
+for t in np.arange(10):
+    plane0.update_pos_optimally(plane0.pos)
+    plane1.update_pos_optimally(plane1.pos)
+    plane2.update_pos_optimally(plane2.pos)
+    plane3.update_pos_optimally(plane3.pos)
 
 print(plane0.trajectory)
-
-#Plane 1
-while plane1.distance > 0:
-    plane1.update_pos(plane1.pos)
-
 print(plane1.trajectory)
+print(plane2.trajectory)
+print(plane3.trajectory)
 
 
 #Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
