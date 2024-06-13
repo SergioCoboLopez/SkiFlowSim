@@ -56,27 +56,19 @@ class plane:
         self.trajectory.append(list(self.pos))
 
 
-<<<<<<< HEAD
-planes=4
-=======
 
-        
-            
-planes=2
->>>>>>> cc5a21a1bd2044c0eb3fc941ea10b3c3cf8773b0
+n_planes=4
 
-plane0=plane([0,0], [2,2]) #Define object with origin and destination
-plane1=plane([2,2], [0,0]) #Define a second object (plane) with opposite destination/origin
-plane2=plane([0,2], [2,0]) #Define object with origin and destination
-plane3=plane([2,0], [0,2]) #Define a second object (plane) with opposite destination/origin
 
+plane0=plane([0,0], [5,5]) #Define object with origin and destination
+plane1=plane([5,5], [0,0]) #Define a second object (plane) with opposite destination/origin
+plane2=plane([0,5], [5,0]) #Define object with origin and destination
+plane3=plane([5,0], [0,5]) #Define a second object (plane) with opposite destination/origin
 
 
 print("starting at:", plane0.origin, ". Destination:", plane0.destin, ". Minimum distance:", plane0.distance)
-
-<<<<<<< HEAD
 print("starting at:", plane1.origin, ". Destination:", plane1.destin, ". Minimum distance:", plane1.distance)
-=======
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # steps=5
 # for step in range(steps):
@@ -87,7 +79,7 @@ print("starting at:", plane1.origin, ". Destination:", plane1.destin, ". Minimum
 # print(plane1.trajectory)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
->>>>>>> cc5a21a1bd2044c0eb3fc941ea10b3c3cf8773b0
+
 
 print("starting at:", plane2.origin, ". Destination:", plane2.destin, ". Minimum distance:", plane2.distance)
 
@@ -119,5 +111,5 @@ x_move1=[step[0] for step in plane1.trajectory]
 y_move1=[step[1] for step in plane1.trajectory]
 
 d_tr = pd.DataFrame({'plane0_x' : x_move0, 'plane0_y': y_move0,'plane1_x' : x_move1, 'plane1_y': y_move1 })
-d_tr.to_csv('../data/' + 'trajectories_classes_size_' + str(N) + '_planes_' + str(planes)+  '.csv')
+d_tr.to_csv('../data/' + 'trajectories_classes_size_' + str(N) + '_planes_' + str(n_planes)+  '.csv')
 #---------------------------------
