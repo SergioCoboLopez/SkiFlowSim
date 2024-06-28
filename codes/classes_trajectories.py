@@ -10,8 +10,26 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 
+#-----------------------------------------------------
+class grid:
+
+    def __init__(self, N, M):
+        self.matrix=np.zeros((N,M))
+
+    #Initialize the matrix with the origins of all planes in the grid
+    def initialize_transit(self, planes):
+        for plane in planes:
+            self.matrix[plane.origin[0], plane.origin[1]]+=1
+
+    #Update positions of planes in grid
+    def transit_state(self,planes):
+        for plane in planes:
+            self.matrix[plane.trajectory[-1][0], plane.trajectory[-1][1]]+=1
+            self.matrix[plane.trajectory[-2][0], plane.trajectory[-2][1]]-=1
+#-----------------------------------------------------
 
 #Define the class "plane"
+#-----------------------------------------------------
 class plane:
 
     #Define Attributes of the class (its important characteristics)
@@ -24,7 +42,7 @@ class plane:
         self.trajectory=[list(self.origin)]#current trajectory        
         
 
-    #Define Methods: the things a plane does
+    #Methods: the things a plane does
     #move
     def update_pos_random(self, pos):
         movements = [np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])]
@@ -54,59 +72,50 @@ class plane:
         self.pos = best_position
         self.distance=sum(abs(best_position - self.destin))
         self.trajectory.append(list(self.pos))
-
+#-----------------------------------------------------
 
 #Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
 #---------------------------------
-N=3 #---> In the future a "grid or airspace class will need to be defined"
-CAP=np.zeros((N,N))
+N=6 #Length-width of grid
+aerospace=grid(N,N) # Define object aerospace from class grid
+
 
 
 n_planes=4
 
+#Define objects plane from class plane
 ori_plane0_0,dest_plane0_0 = [0,0], [5,5]
 plane0=plane(ori_plane0_0, dest_plane0_0) #Define object with origin and destination
 plane1=plane([5,5], [0,0]) #Define a second object (plane) with opposite destination/origin
 plane2=plane([0,5], [5,0]) #Define object with origin and destination
 plane3=plane([5,0], [0,5]) #Define a second object (plane) with opposite destination/origin
+plane4=plane([0,0], [2,2])
+planes=[plane0,plane1,plane2,plane3,plane4]
 
-'''
-CAP[ori_plane0_0] += 1 #There is one plane in position origin
-CAP[ori_plane1_0] += 1 #There is one plane in position origin
-CAP[ori_plane2_0] += 1 #There is one plane in position origin
-CAP[ori_plane3_0] += 1 #There is one plane in position origin
-
-        #Capacities, falta for i in nplanes
-        CAP[ori[0],ori[1]] -= 1
-        CAP[new_ori[0],new_ori[1]] += 1
-        #----------------------
-'''
 
 print("starting at:", plane0.origin, ". Destination:", plane0.destin, ". Minimum distance:", plane0.distance)
 print("starting at:", plane1.origin, ". Destination:", plane1.destin, ". Minimum distance:", plane1.distance)
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# steps=5
-# for step in range(steps):
-#     plane0.update_pos(plane0.pos)
-#     plane1.update_pos(plane1.pos)
-
-# print(plane0.trajectory)
-# print(plane1.trajectory)
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
 print("starting at:", plane2.origin, ". Destination:", plane2.destin, ". Minimum distance:", plane2.distance)
-
 print("starting at:", plane3.origin, ". Destination:", plane3.destin, ". Minimum distance:", plane3.distance)
 
+#Initialize the aerospace
+aerospace.initialize_transit(planes)
+print(aerospace.matrix)
+
+
 for t in np.arange(10):
+    
     plane0.update_pos_optimally(plane0.pos)
     plane1.update_pos_optimally(plane1.pos)
     plane2.update_pos_optimally(plane2.pos)
     plane3.update_pos_optimally(plane3.pos)
+    plane4.update_pos_optimally(plane3.pos)
 
+    aerospace.transit_state(planes)
+
+
+    print(aerospace.matrix)
+    
 print(plane0.trajectory)
 print(plane1.trajectory)
 print(plane2.trajectory)
