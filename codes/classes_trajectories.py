@@ -21,7 +21,7 @@ class plane:
         self.destin = np.array([des_plane[0], des_plane[1]]) #destination
         self.pos=self.origin                      #current position
         self.distance=sum(abs(self.pos-self.destin))#current distance to destination
-        self.trajectory=[list(self.origin)]#current trajectory
+        self.trajectory=[list(self.origin)]#current trajectory        
         
 
     #Define Methods: the things a plane does
@@ -56,15 +56,31 @@ class plane:
         self.trajectory.append(list(self.pos))
 
 
+#Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
+#---------------------------------
+N=3 #---> In the future a "grid or airspace class will need to be defined"
+CAP=np.zeros((N,N))
+
 
 n_planes=4
 
-
-plane0=plane([0,0], [5,5]) #Define object with origin and destination
+ori_plane0_0,dest_plane0_0 = [0,0], [5,5]
+plane0=plane(ori_plane0_0, dest_plane0_0) #Define object with origin and destination
 plane1=plane([5,5], [0,0]) #Define a second object (plane) with opposite destination/origin
 plane2=plane([0,5], [5,0]) #Define object with origin and destination
 plane3=plane([5,0], [0,5]) #Define a second object (plane) with opposite destination/origin
 
+'''
+CAP[ori_plane0_0] += 1 #There is one plane in position origin
+CAP[ori_plane1_0] += 1 #There is one plane in position origin
+CAP[ori_plane2_0] += 1 #There is one plane in position origin
+CAP[ori_plane3_0] += 1 #There is one plane in position origin
+
+        #Capacities, falta for i in nplanes
+        CAP[ori[0],ori[1]] -= 1
+        CAP[new_ori[0],new_ori[1]] += 1
+        #----------------------
+'''
 
 print("starting at:", plane0.origin, ". Destination:", plane0.destin, ". Minimum distance:", plane0.distance)
 print("starting at:", plane1.origin, ". Destination:", plane1.destin, ". Minimum distance:", plane1.distance)
@@ -95,11 +111,6 @@ print(plane0.trajectory)
 print(plane1.trajectory)
 print(plane2.trajectory)
 print(plane3.trajectory)
-
-
-#Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
-#---------------------------------
-N=3 #---> In the future a "grid or airspace class will need to be defined"
 
 
 #Save trajectories to dataframe and dataframe to csv
