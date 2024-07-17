@@ -19,7 +19,7 @@ class plane:
     def __init__(self, ori_plane,des_plane):
         self.origin = np.array([ori_plane[0], ori_plane[1]]) #origin
         self.destin = np.array([des_plane[0], des_plane[1]]) #destination
-        self.pos=self.origin                      #current position
+        self.pos = self.origin                      #current position
         self.distance=sum(abs(self.pos-self.destin))#current distance to destination
         self.trajectory=[list(self.origin)]#current trajectory
         
