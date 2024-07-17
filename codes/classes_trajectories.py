@@ -15,12 +15,14 @@ class grid:
 
     def __init__(self, N, M):
         self.matrix=np.zeros((N,M))
+        self.width=N
+        self.length=M
 
     #Initialize the matrix with the origins of all planes in the grid
     def initialize_transit(self, planes):
         for p in planes:
             self.matrix[p.origin[0], p.origin[1]]+=1
-
+            
     #Update positions of planes in grid
     def transit_state(self,planes):
         for p in planes:
@@ -60,7 +62,11 @@ class plane:
         
         movements = [np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])] 
 
-        possible_positions=[self.pos + movement for movement in movements if airspace.matrix[movement[0]][movement[1]] <= 2] #capability de 2, ho he comprovat i no acaba de funcionar, van tots a la vegada. A més cal arreglar que  pot surtir de les fronteres amb valors negatius i majors que N o M
+        possible_positions = [self.pos + movement for movement in movements]
+        possible_positions = [pos for pos in possible_positions if (pos[0] < airspace.width and pos[0] >= 0) and (pos[1] < airspace.length and pos[1] >= 0)] #Avoid to be out of frontiers
+        print('Pre',possible_positions)
+        possible_positions = [pos for pos in possible_positions if airspace.matrix[pos[0]][pos[1]] <= 2] #capability 2
+        print('Post',possible_positions)            
         possible_distances=[sum(abs(possible_position - self.destin)) for possible_position in possible_positions]
         
         min_distance=possible_distances.index(min(possible_distances))
@@ -76,12 +82,12 @@ class plane:
 
 #Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
 #---------------------------------
-N=6 #Length-width of grid
-airspace=grid(N,N) # Define object airspace from class grid
+N,M=6,6 #Length-width of grid
+airspace=grid(N,M) # Define object airspace from class grid
 
 
 
-n_planes=4
+n_planes=6
 
 #Encompass possible origins and destinations (nomes diagonals de moment)
 possible_origins = [[0,0],[N-1,N-1]]
@@ -109,6 +115,10 @@ for t in np.arange(10):
     for p in planes:
         p.update_pos_optimally(p.pos,airspace)
 
+    '''planes_conflictius = airspace.check_capability(planes) #retornar planes_conflictius
+    for p in planes_conflictius:
+         p.update_pos_optimally(p.pos,airspace) #S'ha d'incloure que no torni a fer el moviment prohibit'''
+    
     airspace.transit_state(planes)
 
     print(airspace.matrix)
