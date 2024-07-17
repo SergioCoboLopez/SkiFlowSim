@@ -13,21 +13,17 @@ from matplotlib.pyplot import figure
 #-----------------------------------------------------
 class grid:
 
-    def __init__(self, N, M):
-        self.matrix=np.zeros((N,M))
+    def __init__(self, w, l, cap):
+
         self.width=N
         self.length=M
-
+        self.capability=cap
+        self.matrix=np.zeros((self.width,self.length))
+        
     #Initialize the matrix with the origins of all planes in the grid
     def initialize_transit(self, planes):
         for p in planes:
             self.matrix[p.origin[0], p.origin[1]]+=1
-            
-    #Update positions of planes in grid
-    def transit_state(self,planes):
-        for p in planes:
-            self.matrix[p.trajectory[-1][0], p.trajectory[-1][1]]+=1
-            self.matrix[p.trajectory[-2][0], p.trajectory[-2][1]]-=1
 #-----------------------------------------------------
 
 #Define the class "plane"
@@ -45,7 +41,7 @@ class plane:
         
 
     #Methods: the things a plane does
-    #move
+    #move at random
     def update_pos_random(self, pos):
         movements = [np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])]
         
@@ -57,16 +53,15 @@ class plane:
         self.trajectory.append(list(self.pos))
 
 
-      #move
+    #move optimally
     def update_pos_optimally(self, pos, airspace):
         
         movements = [np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])] 
 
         possible_positions = [self.pos + movement for movement in movements]
         possible_positions = [pos for pos in possible_positions if (pos[0] < airspace.width and pos[0] >= 0) and (pos[1] < airspace.length and pos[1] >= 0)] #Avoid to be out of frontiers
-        print('Pre',possible_positions)
+        
         possible_positions = [pos for pos in possible_positions if airspace.matrix[pos[0]][pos[1]] <= 2] #capability 2
-        print('Post',possible_positions)            
         possible_distances=[sum(abs(possible_position - self.destin)) for possible_position in possible_positions]
         
         min_distance=possible_distances.index(min(possible_distances))
@@ -78,14 +73,16 @@ class plane:
         self.pos = best_position
         self.distance=sum(abs(best_position - self.destin))
         self.trajectory.append(list(self.pos))
+
+        #Update airspace matrix
+        airspace.matrix[self.pos[0],self.pos[1]]+=1
+        airspace.matrix[self.trajectory[-2][0], self.trajectory[-2][1]]-=1 
 #-----------------------------------------------------
 
 #Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
 #---------------------------------
 N,M=6,6 #Length-width of grid
-airspace=grid(N,M) # Define object airspace from class grid
-
-
+airspace=grid(N,M,2) # Define object airspace from class grid
 
 n_planes=6
 
@@ -119,7 +116,7 @@ for t in np.arange(10):
     for p in planes_conflictius:
          p.update_pos_optimally(p.pos,airspace) #S'ha d'incloure que no torni a fer el moviment prohibit'''
     
-    airspace.transit_state(planes)
+#    airspace.transit_state(planes)
 
     print(airspace.matrix)
 
