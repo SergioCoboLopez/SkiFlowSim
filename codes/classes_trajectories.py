@@ -10,6 +10,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 
+rnd.seed(55)
+
 #-----------------------------------------------------
 class grid:
 
@@ -68,12 +70,15 @@ class plane:
             if (self.destin[0] == pos[0]) and (self.destin[1] == pos[1]):
                 capability = max_planes
                 break
-            
+
         possible_positions = [pos for pos in possible_positions if airspace.matrix[pos[0]][pos[1]] < capability] 
         possible_distances=[sum(abs(possible_position - self.destin)) for possible_position in possible_positions]
-        
-        min_distance=possible_distances.index(min(possible_distances))
-        best_position=possible_positions[min_distance]
+
+        if len(possible_distances) > 0:
+            min_distance=possible_distances.index(min(possible_distances))
+            best_position=possible_positions[min_distance]
+        else: #All possible destinations are full of capability --> rest in the same airspace
+            best_position=self.pos
 
         if (self.pos[0] == self.destin[0] and self.pos[1] == self.destin[1]):
             best_position=self.pos
@@ -117,9 +122,6 @@ print(airspace.matrix)
 
 for t in np.arange(10):
 
-    for p in planes:
-        print(p,p.priority)
-    
     #Priority order
     planes_order = sorted(planes, key=lambda plane: plane.priority, reverse=True)
 
