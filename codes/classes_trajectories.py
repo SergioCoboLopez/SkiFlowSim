@@ -24,15 +24,7 @@ class grid:
     def initialize_transit(self, planes):
         for p in planes:
             self.matrix[p.origin[0], p.origin[1]]+=1
-<<<<<<< HEAD
-            
-    #Update positions of one plane in grid 
-    def one_plane_transit_state(self,plane):
-        self.matrix[plane.trajectory[-1][0], plane.trajectory[-1][1]]+=1
-        self.matrix[plane.trajectory[-2][0], plane.trajectory[-2][1]]-=1
-            
-=======
->>>>>>> 85ec4ef77961e14af89b46815baad9ba4d22f36f
+
 #-----------------------------------------------------
 
 #Define the class "plane"
@@ -62,21 +54,14 @@ class plane:
         self.trajectory.append(list(self.pos))
 
 
-<<<<<<< HEAD
-      #move
+      #move optimally
     def update_pos_optimally(self, pos, airspace, max_planes):
 
         capability = 2 
-=======
-    #move optimally
-    def update_pos_optimally(self, pos, airspace):
-        
->>>>>>> 85ec4ef77961e14af89b46815baad9ba4d22f36f
         movements = [np.array([0,-1]), np.array([-1,0]), np.array([0,1]), np.array([1,0])] 
 
         possible_positions = [self.pos + movement for movement in movements]
         possible_positions = [pos for pos in possible_positions if (pos[0] < airspace.width and pos[0] >= 0) and (pos[1] < airspace.length and pos[1] >= 0)] #Avoid to be out of frontiers
-<<<<<<< HEAD
 
         #If final destination is an airport, it has maximum capability
         for pos in possible_positions:
@@ -85,10 +70,6 @@ class plane:
                 break
             
         possible_positions = [pos for pos in possible_positions if airspace.matrix[pos[0]][pos[1]] < capability] 
-=======
-        
-        possible_positions = [pos for pos in possible_positions if airspace.matrix[pos[0]][pos[1]] <= 2] #capability 2
->>>>>>> 85ec4ef77961e14af89b46815baad9ba4d22f36f
         possible_distances=[sum(abs(possible_position - self.destin)) for possible_position in possible_positions]
         
         min_distance=possible_distances.index(min(possible_distances))
@@ -101,13 +82,9 @@ class plane:
         self.distance=sum(abs(best_position - self.destin))
         self.trajectory.append(list(self.pos))
 
-<<<<<<< HEAD
-        airspace.one_plane_transit_state(self)
-=======
         #Update airspace matrix
         airspace.matrix[self.pos[0],self.pos[1]]+=1
         airspace.matrix[self.trajectory[-2][0], self.trajectory[-2][1]]-=1 
->>>>>>> 85ec4ef77961e14af89b46815baad9ba4d22f36f
 #-----------------------------------------------------
 
 #Size of lattice; origin and destination; minimum distance between origin and destination; keep the trajectory with a list of nodes
@@ -153,11 +130,6 @@ for t in np.arange(10):
     for p in planes_conflictius:
          p.update_pos_optimally(p.pos,airspace) #S'ha d'incloure que no torni a fer el moviment prohibit'''
     
-<<<<<<< HEAD
-=======
-#    airspace.transit_state(planes)
-
->>>>>>> 85ec4ef77961e14af89b46815baad9ba4d22f36f
     print(airspace.matrix)
 
 print("Trajectories")
